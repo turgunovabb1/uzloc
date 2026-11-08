@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "uzloc"
+version = "0.2.0"
+description = "Uzbek localization toolkit: Latin-Cyrillic transliteration and translation QA tools."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Abbos Turgunov" }]
+license = { text = "MIT" }
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+uzloc = "uzloc.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["uzloc*"]
