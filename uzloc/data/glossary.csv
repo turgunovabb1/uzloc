@@ -1,0 +1,169 @@
+en,uz,ru,category
+account,hisob,аккаунт,general
+add,qo'shish,добавить,ui
+address,manzil,адрес,general
+algorithm,algoritm,алгоритм,programming
+analytics,analitika,аналитика,data
+app,ilova,приложение,general
+application,dastur,приложение,general
+archive,arxiv,архив,files
+array,massiv,массив,programming
+artificial intelligence,sun'iy intellekt,искусственный интеллект,ai
+attachment,ilova fayl,вложение,files
+authentication,autentifikatsiya,аутентификация,security
+authorization,avtorizatsiya,авторизация,security
+back,orqaga,назад,ui
+backup,zaxira nusxa,резервная копия,files
+bandwidth,o'tkazish qobiliyati,пропускная способность,network
+branch,tarmoq,ветка,git
+browser,brauzer,браузер,web
+bug,xato,ошибка,programming
+button,tugma,кнопка,ui
+cache,kesh,кэш,web
+cancel,bekor qilish,отмена,ui
+chatbot,chatbot,чат-бот,ai
+checkbox,belgilash katakchasi,флажок,ui
+class,sinf,класс,programming
+clipboard,bufer,буфер обмена,general
+close,yopish,закрыть,ui
+cloud,bulut,облако,network
+code,kod,код,programming
+command,buyruq,команда,programming
+comment,izoh,комментарий,programming
+commit,kommit,коммит,git
+compiler,kompilyator,компилятор,programming
+confirm,tasdiqlash,подтвердить,ui
+connection,ulanish,подключение,network
+contact,aloqa,контакт,general
+continue,davom etish,продолжить,ui
+cookie,cookie fayl,файл cookie,web
+copy,nusxa olish,копировать,ui
+cursor,kursor,курсор,ui
+cut,qirqib olish,вырезать,ui
+dashboard,boshqaruv paneli,панель управления,ui
+data,ma'lumot,данные,data
+database,ma'lumotlar bazasi,база данных,data
+dataset,ma'lumotlar to'plami,набор данных,data
+debug,nosozliklarni tuzatish,отладка,programming
+default,standart,по умолчанию,general
+delete,o'chirish,удалить,ui
+deploy,joylashtirish,развернуть,programming
+developer,dasturchi,разработчик,programming
+device,qurilma,устройство,general
+dialog,muloqot oynasi,диалоговое окно,ui
+directory,katalog,каталог,files
+disconnect,uzish,отключить,network
+documentation,hujjatlar,документация,programming
+domain,domen,домен,web
+download,yuklab olish,скачать,files
+draft,qoralama,черновик,general
+drag and drop,sudrab tashlash,перетаскивание,ui
+dropdown,ochiluvchi ro'yxat,выпадающий список,ui
+edit,tahrirlash,редактировать,ui
+email,elektron pochta,электронная почта,general
+encryption,shifrlash,шифрование,security
+error,xato,ошибка,general
+export,eksport qilish,экспорт,files
+feature,funksiya,функция,general
+feedback,fikr-mulohaza,отзыв,general
+file,fayl,файл,files
+filter,filtr,фильтр,ui
+firewall,tarmoqlararo ekran,межсетевой экран,security
+folder,jild,папка,files
+font,shrift,шрифт,ui
+form,shakl,форма,ui
+framework,freymvork,фреймворк,programming
+function,funksiya,функция,programming
+hardware,apparat ta'minoti,аппаратное обеспечение,general
+help,yordam,помощь,ui
+history,tarix,история,general
+home page,bosh sahifa,главная страница,web
+icon,belgi,значок,ui
+import,import qilish,импорт,files
+inbox,kiruvchi xatlar,входящие,general
+input,kiritish,ввод,programming
+install,o'rnatish,установить,general
+interface,interfeys,интерфейс,ui
+internet,internet,интернет,network
+keyboard,klaviatura,клавиатура,general
+keyword,kalit so'z,ключевое слово,general
+language,til,язык,general
+language model,til modeli,языковая модель,ai
+library,kutubxona,библиотека,programming
+link,havola,ссылка,web
+loading,yuklanmoqda,загрузка,ui
+localization,mahalliylashtirish,локализация,localization
+log in,tizimga kirish,войти,security
+log out,tizimdan chiqish,выйти,security
+loop,sikl,цикл,programming
+machine learning,mashinali o'qitish,машинное обучение,ai
+machine translation,mashina tarjimasi,машинный перевод,localization
+menu,menyu,меню,ui
+merge,birlashtirish,слияние,git
+message,xabar,сообщение,general
+model,model,модель,ai
+network,tarmoq,сеть,network
+neural network,neyron tarmoq,нейронная сеть,ai
+next,keyingi,далее,ui
+notification,bildirishnoma,уведомление,ui
+open,ochish,открыть,ui
+open source,ochiq kodli,открытый исходный код,programming
+operating system,operatsion tizim,операционная система,general
+output,chiqish,вывод,programming
+password,parol,пароль,security
+paste,qo'yish,вставить,ui
+pause,pauza,пауза,ui
+placeholder,o'rinbosar,заполнитель,localization
+plugin,plagin,плагин,programming
+preview,oldindan ko'rish,предпросмотр,ui
+print,chop etish,печать,ui
+privacy,maxfiylik,конфиденциальность,security
+profile,profil,профиль,general
+prompt,so'rov,запрос,ai
+pull request,pull request,запрос на слияние,git
+refresh,yangilash,обновить,ui
+release,reliz,релиз,programming
+remove,olib tashlash,удалить,ui
+repository,repozitoriy,репозиторий,git
+request,so'rov,запрос,web
+reset,qayta o'rnatish,сбросить,ui
+response,javob,ответ,web
+restart,qayta ishga tushirish,перезапустить,general
+restore,tiklash,восстановить,files
+save,saqlash,сохранить,ui
+screen,ekran,экран,ui
+screenshot,skrinshot,снимок экрана,ui
+search,qidiruv,поиск,ui
+security,xavfsizlik,безопасность,security
+send,yuborish,отправить,ui
+server,server,сервер,network
+settings,sozlamalar,настройки,ui
+share,ulashish,поделиться,ui
+shortcut,tezkor tugma,сочетание клавиш,ui
+sign up,ro'yxatdan o'tish,зарегистрироваться,security
+software,dasturiy ta'minot,программное обеспечение,general
+source code,manba kodi,исходный код,programming
+spam,spam,спам,general
+spreadsheet,elektron jadval,электронная таблица,data
+storage,xotira,хранилище,files
+string,satr,строка,programming
+subscription,obuna,подписка,general
+support,qo'llab-quvvatlash,поддержка,general
+tab,yorliq,вкладка,ui
+terms of service,foydalanish shartlari,условия использования,general
+toolbar,asboblar paneli,панель инструментов,ui
+training data,o'qitish ma'lumotlari,обучающие данные,ai
+translation memory,tarjima xotirasi,память переводов,localization
+undo,amalni qaytarish,отменить,ui
+update,yangilanish,обновление,general
+upload,yuklash,загрузить,files
+user,foydalanuvchi,пользователь,general
+username,foydalanuvchi nomi,имя пользователя,security
+variable,o'zgaruvchi,переменная,programming
+verification code,tasdiqlash kodi,код подтверждения,security
+version,versiya,версия,general
+video call,video qo'ng'iroq,видеозвонок,general
+warning,ogohlantirish,предупреждение,ui
+website,veb-sayt,веб-сайт,web
+window,oyna,окно,ui
+wireless,simsiz,беспроводной,network
