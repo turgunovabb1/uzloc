@@ -2,7 +2,7 @@
 
 **Uzbek localization toolkit** — a Python library and command-line tool for people who translate and build software in Uzbek.
 
-![tests](https://img.shields.io/badge/tests-84%20passed-brightgreen) ![python](https://img.shields.io/badge/python-3.10%2B-blue) ![version](https://img.shields.io/badge/version-0.3.0-orange)
+![tests](https://img.shields.io/badge/tests-151%20passed-brightgreen) ![python](https://img.shields.io/badge/python-3.10%2B-blue) ![version](https://img.shields.io/badge/version-0.4.0-orange)
 
 ## ✨ Features
 
@@ -16,6 +16,11 @@
   - search in any of the three languages, Uzbek in Latin *or* Cyrillic
   - "Did you mean…?" suggestions for typos (`pasword` → `password`)
   - output as a table, JSON or CSV, or load your own glossary file
+- **Translation file checker** for JSON, PO and CSV — finds what a reviewer would miss:
+  - missing, extra and empty keys, and strings left in English
+  - broken placeholders (`{name}`, `%s`, `%(n)d`, `{{x}}`) and swapped printf order
+  - missing HTML tags, mixed Latin/Cyrillic text, wrong script, spacing and punctuation
+  - fuzzy PO entries, translation progress in %, JSON output and CI-friendly exit codes
 - **Command-line tool** — convert words, whole files or piped text
 
 ## 🚀 Install
@@ -44,6 +49,11 @@ uzloc glossary save --exact --format json     # machine-readable output
 uzloc glossary -c git a -n 20                 # every Git term
 uzloc glossary --categories                   # list categories
 uzloc glossary salom --glossary-file my.csv   # use your own glossary
+
+uzloc check en.json uz.json                   # compare a translation with its source
+uzloc check uz.po --script latin              # check one PO file, expect Latin script
+uzloc check en.json uz.json --format json     # machine-readable report
+uzloc check en.json uz.json --ignore punctuation --strict
 ```
 
 Example:
@@ -54,6 +64,43 @@ English   O'zbekcha   Русский
 --------  ----------  ---------
 settings  sozlamalar  настройки
 ```
+
+## 🔎 Checking a translation
+
+Try it on the files in [`examples/`](examples):
+
+```
+$ uzloc check examples/en.json examples/uz.json
+Source:      examples/en.json
+Translation: examples/uz.json
+Progress:    9/9 keys translated (100.0%)
+
+✗ [placeholders] app.welcome: missing {name}; unexpected {ism}
+    source: Welcome, {name}!
+    target: Xush kelibsiz, {ism}!
+✗ [placeholders] app.files_found: printf placeholders changed order (use numbered ones like %1$s, %2$d to reorder)
+    source: Found %d files in %s.
+    target: %s ichida %d ta fayl topildi.
+✗ [tags] app.delete_confirm: missing </b>, <b>
+...
+3 error(s), 3 warning(s)
+```
+
+| Check | Level | What it finds |
+|---|---|---|
+| `missing` | error | key is in the source but not in the translation |
+| `empty` | error | translation is an empty string |
+| `placeholders` | error | `{name}`, `%s`, `%(n)d` … differ, or printf order changed |
+| `tags` | error | HTML tags such as `<b>` or `</a>` differ |
+| `extra` | warning | key exists only in the translation |
+| `untranslated` | warning | translation is identical to the source |
+| `script` | warning | Latin and Cyrillic mixed, or the wrong script for `--script` |
+| `whitespace` | warning | leading/trailing spaces differ |
+| `punctuation` | warning | final `. ! ? :` differs |
+| `fuzzy` | warning | PO entry marked `#, fuzzy` |
+
+Exit codes: `0` no errors · `1` errors found (or warnings with `--strict`) · `2` files could not be read.
+This makes `uzloc check` easy to use in CI to stop broken translations from being merged.
 
 ## 🐍 Python
 
@@ -68,6 +115,13 @@ from uzloc.glossary import search, lookup
 
 search("sozlamalar")[0].term.en   # "settings"
 lookup("save").uz                 # "saqlash"
+
+from uzloc.loaders import load
+from uzloc.checker import check
+
+report = check(load("en.json"), load("uz.json"))
+report.progress                   # 100.0
+[i.message for i in report.errors]
 ```
 
 ## 🧪 Tests
@@ -81,7 +135,7 @@ python3 -m pytest
 - [x] Latin ↔ Cyrillic transliteration
 - [x] Command-line tool
 - [x] English · Uzbek · Russian IT glossary with search
-- [ ] Translation file checker (JSON, PO, CSV): missing keys, broken placeholders, mixed scripts
+- [x] Translation file checker (JSON, PO, CSV): missing keys, broken placeholders, mixed scripts
 - [ ] HTML / Markdown reports
 - [ ] Web interface
 
