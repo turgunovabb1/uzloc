@@ -1,0 +1,16 @@
+{
+  "app": {
+    "title": "Tarmoq monitori",
+    "welcome": "Xush kelibsiz, {ism}!",
+    "files_found": "%s ichida %d ta fayl topildi.",
+    "save": "Saqlash",
+    "delete_confirm": "{count} ta elementni o'chirasizmi?",
+    "learn_more": "Batafsil: https://example.com",
+    "settings": "Sozlamalar"
+  },
+  "errors": {
+    "offline": "Siz oflaynsiz. Ulanishni tekshiring",
+    "timeout": "The request timed out."
+  },
+  "old_key": "Eski matn"
+}

@@ -1,0 +1,21 @@
+# Uzbek translation of a small demo app.
+msgid ""
+msgstr ""
+"Language: uz\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Open file"
+msgstr "Faylni ochish"
+
+msgid "Downloaded %s of %s"
+msgstr "%s dan %s yuklab olindi"
+
+#, fuzzy
+msgid "Close window"
+msgstr "Oynani yopish"
+
+msgid "Search history"
+msgstr "Qidiruv тарихи"
+
+msgid "Copy link"
+msgstr ""

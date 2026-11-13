@@ -9,6 +9,8 @@ Examples:
     uzloc glossary password
     uzloc glossary "o'chirish" --lang uz
     uzloc glossary --categories
+    uzloc check en.json uz.json
+    uzloc check uz.po --script latin
 """
 
 import argparse
@@ -18,7 +20,9 @@ import sys
 from pathlib import Path
 
 from uzloc import __version__
+from uzloc.checker import ALL_CHECKS, check
 from uzloc.glossary import GlossaryError, categories, load_glossary, search
+from uzloc.loaders import LoadError, load
 from uzloc.translit import (
     cyrillic_to_latin,
     detect_script,
@@ -122,6 +126,58 @@ def cmd_glossary(args):
     return 0
 
 
+def _short(text, width=60):
+    text = text.replace("\n", "\\n")
+    return text if len(text) <= width else text[: width - 1] + "…"
+
+
+def _print_report(report, show_warnings=True):
+    print(f"Source:      {report.source_path}")
+    print(f"Translation: {report.target_path}")
+    print(f"Progress:    {report.translated}/{report.total} keys translated ({report.progress}%)")
+    print()
+    shown = report.issues if show_warnings else report.errors
+    for issue in shown:
+        mark = "✗" if issue.severity == "error" else "!"
+        print(f"{mark} [{issue.check}] {issue.key}: {issue.message}")
+        if issue.source:
+            print(f"    source: {_short(issue.source)}")
+        if issue.target:
+            print(f"    target: {_short(issue.target)}")
+    if shown:
+        print()
+    counts = ", ".join(f"{name} {n}" for name, n in sorted(report.counts().items()))
+    print(f"{len(report.errors)} error(s), {len(report.warnings)} warning(s)"
+          + (f" — {counts}" if counts else ""))
+    if not report.issues:
+        print("✓ No problems found.")
+
+
+def cmd_check(args):
+    try:
+        if args.target:
+            source, target = load(args.source), load(args.target)
+        else:
+            source = target = load(args.source)
+            if not target.sources:
+                print("Error: with one file, it must be a .po file. "
+                      "Otherwise give a source and a translation.", file=sys.stderr)
+                return 2
+        ignore = [c.strip() for c in args.ignore.split(",")] if args.ignore else []
+        report = check(source, target, script=args.script, ignore=ignore)
+    except (LoadError, ValueError) as err:
+        print(f"Error: {err}", file=sys.stderr)
+        return 2
+
+    if args.format == "json":
+        print(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
+    else:
+        _print_report(report, show_warnings=not args.errors_only)
+
+    failed = report.errors or (args.strict and report.warnings)
+    return 1 if failed else 0
+
+
 def build_parser():
     parser = argparse.ArgumentParser(
         prog="uzloc",
@@ -159,6 +215,24 @@ def build_parser():
     p_gl.add_argument("--glossary-file", help="Use your own CSV (columns: en, uz, ru, category).")
     p_gl.add_argument("--categories", action="store_true", help="List categories and term counts.")
     p_gl.set_defaults(func=cmd_glossary)
+
+    p_ch = sub.add_parser(
+        "check",
+        help="Check a translation file for missing keys, broken placeholders and more.",
+        description="Compare a source file with its translation (.json, .po or .csv). "
+                    "Exit code: 0 = OK, 1 = problems found, 2 = could not read the files.",
+    )
+    p_ch.add_argument("source", help="Source file (e.g. en.json), or a single .po file.")
+    p_ch.add_argument("target", nargs="?", help="Translated file (e.g. uz.json).")
+    p_ch.add_argument("--script", choices=["latin", "cyrillic"],
+                      help="Expected Uzbek script; words in the other script are reported.")
+    p_ch.add_argument("--ignore", metavar="CHECKS",
+                      help=f"Comma-separated checks to skip. Available: {', '.join(ALL_CHECKS)}")
+    p_ch.add_argument("--format", choices=["text", "json"], default="text",
+                      help="Output format (default: text).")
+    p_ch.add_argument("--errors-only", action="store_true", help="Hide warnings in the text output.")
+    p_ch.add_argument("--strict", action="store_true", help="Fail (exit code 1) on warnings too.")
+    p_ch.set_defaults(func=cmd_check)
 
     return parser
 

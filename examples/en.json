@@ -1,0 +1,15 @@
+{
+  "app": {
+    "title": "Network Monitor",
+    "welcome": "Welcome, {name}!",
+    "files_found": "Found %d files in %s.",
+    "save": "Save",
+    "delete_confirm": "Delete <b>{count}</b> items?",
+    "learn_more": "Learn more at https://example.com",
+    "settings": "Settings"
+  },
+  "errors": {
+    "offline": "You are offline. Check your connection.",
+    "timeout": "The request timed out."
+  }
+}
