@@ -11,18 +11,22 @@ Examples:
     uzloc glossary --categories
     uzloc check en.json uz.json
     uzloc check uz.po --script latin
+    uzloc check en.json uz.json --format html -o report.html
+    uzloc check en.json uz.json --format markdown
 """
 
 import argparse
 import csv
 import json
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 from uzloc import __version__
 from uzloc.checker import ALL_CHECKS, check
 from uzloc.glossary import GlossaryError, categories, load_glossary, search
 from uzloc.loaders import LoadError, load
+from uzloc.report import render_html, render_markdown
 from uzloc.translit import (
     cyrillic_to_latin,
     detect_script,
@@ -131,26 +135,32 @@ def _short(text, width=60):
     return text if len(text) <= width else text[: width - 1] + "…"
 
 
-def _print_report(report, show_warnings=True):
-    print(f"Source:      {report.source_path}")
-    print(f"Translation: {report.target_path}")
-    print(f"Progress:    {report.translated}/{report.total} keys translated ({report.progress}%)")
-    print()
-    shown = report.issues if show_warnings else report.errors
-    for issue in shown:
+def _report_text(report) -> str:
+    lines = [
+        f"Source:      {report.source_path}",
+        f"Translation: {report.target_path}",
+        f"Progress:    {report.translated}/{report.total} keys translated ({report.progress}%)",
+        "",
+    ]
+    for issue in report.issues:
         mark = "✗" if issue.severity == "error" else "!"
-        print(f"{mark} [{issue.check}] {issue.key}: {issue.message}")
+        lines.append(f"{mark} [{issue.check}] {issue.key}: {issue.message}")
         if issue.source:
-            print(f"    source: {_short(issue.source)}")
+            lines.append(f"    source: {_short(issue.source)}")
         if issue.target:
-            print(f"    target: {_short(issue.target)}")
-    if shown:
-        print()
+            lines.append(f"    target: {_short(issue.target)}")
+    if report.issues:
+        lines.append("")
     counts = ", ".join(f"{name} {n}" for name, n in sorted(report.counts().items()))
-    print(f"{len(report.errors)} error(s), {len(report.warnings)} warning(s)"
-          + (f" — {counts}" if counts else ""))
+    lines.append(f"{len(report.errors)} error(s), {len(report.warnings)} warning(s)"
+                 + (f" — {counts}" if counts else ""))
     if not report.issues:
-        print("✓ No problems found.")
+        lines.append("✓ No problems found.")
+    return "\n".join(lines) + "\n"
+
+
+def _print_report(report):
+    print(_report_text(report), end="")
 
 
 def cmd_check(args):
@@ -169,10 +179,23 @@ def cmd_check(args):
         print(f"Error: {err}", file=sys.stderr)
         return 2
 
-    if args.format == "json":
-        print(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
+    shown = replace(report, issues=report.errors) if args.errors_only else report
+    if args.format == "text" and not args.output:
+        _print_report(shown)
     else:
-        _print_report(report, show_warnings=not args.errors_only)
+        if args.format == "json":
+            text = json.dumps(shown.to_dict(), ensure_ascii=False, indent=2) + "\n"
+        elif args.format == "html":
+            text = render_html(shown)
+        elif args.format == "markdown":
+            text = render_markdown(shown)
+        else:
+            text = _report_text(shown)
+        try:
+            write_output(text, args.output)
+        except OSError as err:
+            print(f"Error: {err}", file=sys.stderr)
+            return 2
 
     failed = report.errors or (args.strict and report.warnings)
     return 1 if failed else 0
@@ -228,9 +251,11 @@ def build_parser():
                       help="Expected Uzbek script; words in the other script are reported.")
     p_ch.add_argument("--ignore", metavar="CHECKS",
                       help=f"Comma-separated checks to skip. Available: {', '.join(ALL_CHECKS)}")
-    p_ch.add_argument("--format", choices=["text", "json"], default="text",
-                      help="Output format (default: text).")
-    p_ch.add_argument("--errors-only", action="store_true", help="Hide warnings in the text output.")
+    p_ch.add_argument("--format", choices=["text", "json", "html", "markdown"], default="text",
+                      help="Output format (default: text). html makes a page you can open "
+                           "in a browser; markdown is ready for GitHub.")
+    p_ch.add_argument("-o", "--output", help="Save the report to this file instead of printing it.")
+    p_ch.add_argument("--errors-only", action="store_true", help="Hide warnings in the report.")
     p_ch.add_argument("--strict", action="store_true", help="Fail (exit code 1) on warnings too.")
     p_ch.set_defaults(func=cmd_check)
 

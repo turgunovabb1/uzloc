@@ -2,7 +2,7 @@
 
 **Uzbek localization toolkit** — a Python library and command-line tool for people who translate and build software in Uzbek.
 
-![tests](https://img.shields.io/badge/tests-151%20passed-brightgreen) ![python](https://img.shields.io/badge/python-3.10%2B-blue) ![version](https://img.shields.io/badge/version-0.4.0-orange)
+![tests](https://img.shields.io/badge/tests-168%20passed-brightgreen) ![python](https://img.shields.io/badge/python-3.10%2B-blue) ![version](https://img.shields.io/badge/version-0.5.0-orange)
 
 ## ✨ Features
 
@@ -21,6 +21,9 @@
   - broken placeholders (`{name}`, `%s`, `%(n)d`, `{{x}}`) and swapped printf order
   - missing HTML tags, mixed Latin/Cyrillic text, wrong script, spacing and punctuation
   - fuzzy PO entries, translation progress in %, JSON output and CI-friendly exit codes
+- **Reports** — one HTML page you can open in any browser or send to a client
+  (progress bar, summary, filter buttons, highlighted placeholders, dark mode),
+  or a Markdown table ready to paste into a GitHub pull request
 - **Command-line tool** — convert words, whole files or piped text
 
 ## 🚀 Install
@@ -53,6 +56,8 @@ uzloc glossary salom --glossary-file my.csv   # use your own glossary
 uzloc check en.json uz.json                   # compare a translation with its source
 uzloc check uz.po --script latin              # check one PO file, expect Latin script
 uzloc check en.json uz.json --format json     # machine-readable report
+uzloc check en.json uz.json --format html -o report.html   # page for people
+uzloc check en.json uz.json --format markdown              # table for GitHub
 uzloc check en.json uz.json --ignore punctuation --strict
 ```
 
@@ -102,6 +107,17 @@ Progress:    9/9 keys translated (100.0%)
 Exit codes: `0` no errors · `1` errors found (or warnings with `--strict`) · `2` files could not be read.
 This makes `uzloc check` easy to use in CI to stop broken translations from being merged.
 
+### Reports
+
+`--format html -o report.html` saves one self-contained page: no internet, no extra files.
+It shows the progress bar, a summary by check, buttons to filter the list, and each
+source/translation pair with placeholders and tags highlighted. Spaces at the start or
+end of a string show as `·`, so a missing space is easy to see. The page follows the
+system's light or dark mode and prints cleanly.
+
+`--format markdown` prints a table you can paste into a GitHub issue or pull request.
+Add `--errors-only` to either one to leave out warnings.
+
 ## 🐍 Python
 
 ```python
@@ -122,6 +138,10 @@ from uzloc.checker import check
 report = check(load("en.json"), load("uz.json"))
 report.progress                   # 100.0
 [i.message for i in report.errors]
+
+from uzloc.report import render_html, render_markdown
+
+open("report.html", "w", encoding="utf-8").write(render_html(report))
 ```
 
 ## 🧪 Tests
@@ -136,7 +156,7 @@ python3 -m pytest
 - [x] Command-line tool
 - [x] English · Uzbek · Russian IT glossary with search
 - [x] Translation file checker (JSON, PO, CSV): missing keys, broken placeholders, mixed scripts
-- [ ] HTML / Markdown reports
+- [x] HTML / Markdown reports
 - [ ] Web interface
 
 ---
