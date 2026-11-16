@@ -13,6 +13,7 @@ Examples:
     uzloc check uz.po --script latin
     uzloc check en.json uz.json --format html -o report.html
     uzloc check en.json uz.json --format markdown
+    uzloc web
 """
 
 import argparse
@@ -201,6 +202,17 @@ def cmd_check(args):
     return 1 if failed else 0
 
 
+def cmd_web(args):
+    from uzloc.web import serve  # imported here so other commands start fast
+    try:
+        serve(host=args.host, port=args.port, open_browser=not args.no_browser)
+    except OSError as err:
+        print(f"Error: could not start the server on port {args.port} ({err}). "
+              "Try another one with --port.", file=sys.stderr)
+        return 2
+    return 0
+
+
 def build_parser():
     parser = argparse.ArgumentParser(
         prog="uzloc",
@@ -258,6 +270,15 @@ def build_parser():
     p_ch.add_argument("--errors-only", action="store_true", help="Hide warnings in the report.")
     p_ch.add_argument("--strict", action="store_true", help="Fail (exit code 1) on warnings too.")
     p_ch.set_defaults(func=cmd_check)
+
+    p_web = sub.add_parser("web", help="Open the uzloc web interface in your browser.",
+                           description="Start a small local web page for transliteration, "
+                                       "glossary search and file checks. Press Ctrl+C to stop.")
+    p_web.add_argument("--port", type=int, default=8765, help="Port to use (default: 8765).")
+    p_web.add_argument("--host", default="127.0.0.1",
+                       help="Address to listen on (default: 127.0.0.1, this computer only).")
+    p_web.add_argument("--no-browser", action="store_true", help="Do not open the browser.")
+    p_web.set_defaults(func=cmd_web)
 
     return parser
 
