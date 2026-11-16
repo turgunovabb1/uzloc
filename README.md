@@ -2,7 +2,7 @@
 
 **Uzbek localization toolkit** — a Python library and command-line tool for people who translate and build software in Uzbek.
 
-![tests](https://img.shields.io/badge/tests-168%20passed-brightgreen) ![python](https://img.shields.io/badge/python-3.10%2B-blue) ![version](https://img.shields.io/badge/version-0.5.0-orange)
+![tests](https://img.shields.io/badge/tests-190%20passed-brightgreen) ![python](https://img.shields.io/badge/python-3.10%2B-blue) ![version](https://img.shields.io/badge/version-1.0.0-orange)
 
 ## ✨ Features
 
@@ -24,6 +24,9 @@
 - **Reports** — one HTML page you can open in any browser or send to a client
   (progress bar, summary, filter buttons, highlighted placeholders, dark mode),
   or a Markdown table ready to paste into a GitHub pull request
+- **Web interface** — `uzloc web` opens a page in your browser with three tabs:
+  transliterate, search the glossary, and check files by drag and drop. It runs on
+  your own computer, needs no extra packages and never uploads your files
 - **Command-line tool** — convert words, whole files or piped text
 
 ## 🚀 Install
@@ -118,6 +121,23 @@ system's light or dark mode and prints cleanly.
 `--format markdown` prints a table you can paste into a GitHub issue or pull request.
 Add `--errors-only` to either one to leave out warnings.
 
+## 🌐 Web interface
+
+```bash
+uzloc web                    # opens http://127.0.0.1:8765
+uzloc web --port 9000 --no-browser
+```
+
+| Tab | What it does |
+| --- | --- |
+| Transliterate | Type or paste text; the result appears as you type. Auto, → Lotin or → Кирилл |
+| Glossary | Search 168 IT terms in English, Uzbek or Russian, by category, typos allowed |
+| Check files | Drop a source and a translation (or one .po file), see the report, download it as HTML, Markdown or JSON |
+
+The server listens on `127.0.0.1` only, so nobody else on the network can reach it,
+and it refuses requests from other websites. Press `Ctrl+C` to stop it.
+The same JSON API (`/api/translit`, `/api/glossary`, `/api/check`) is described in `uzloc/web.py`.
+
 ## 🐍 Python
 
 ```python
@@ -157,7 +177,7 @@ python3 -m pytest
 - [x] English · Uzbek · Russian IT glossary with search
 - [x] Translation file checker (JSON, PO, CSV): missing keys, broken placeholders, mixed scripts
 - [x] HTML / Markdown reports
-- [ ] Web interface
+- [x] Web interface (`uzloc web`)
 
 ---
 Created by abb

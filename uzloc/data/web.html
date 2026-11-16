@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>uzloc</title>
+<style>
+:root{--bg:#f7f7f5;--card:#fff;--ink:#1d1f23;--soft:#5b616e;--rule:#e3e5e8;--accent:#1f4fd8;
+--accent-ink:#fff;--err:#c4322b;--err-bg:#fdecea;--ok:#1d7a3e;--ok-bg:#e8f5ec;--warn:#a35f00;--warn-bg:#fff4e0;--field:#fbfbfa}
+@media (prefers-color-scheme:dark){:root{--bg:#15171b;--card:#1e2126;--ink:#e8eaed;--soft:#a2a8b3;--rule:#30343b;
+--accent:#8ab4ff;--accent-ink:#15171b;--err:#ff7b72;--err-bg:#3a1d1c;--ok:#6fd08c;--ok-bg:#16301f;--warn:#f0b35a;--warn-bg:#382a14;--field:#181a1e}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1000px;margin:0 auto;padding:28px 16px 48px}
+header.top{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1{font-size:26px;margin:0}
+.sub{color:var(--soft);margin:2px 0 20px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--rule);margin-bottom:20px;overflow-x:auto}
+.tabs button{font:inherit;font-weight:600;background:none;border:0;border-bottom:3px solid transparent;
+color:var(--soft);padding:10px 14px;cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:700px){.grid2{grid-template-columns:1fr}}
+label{display:block;font-size:13px;font-weight:600;color:var(--soft);margin-bottom:6px}
+textarea,input[type=text],input[type=search],select{width:100%;font:inherit;color:var(--ink);background:var(--field);
+border:1px solid var(--rule);border-radius:8px;padding:10px}
+textarea{min-height:180px;resize:vertical}
+textarea:focus,input:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+.btn{font:inherit;font-weight:600;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);
+border-radius:8px;padding:8px 16px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:default}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:14px;border:0;background:var(--card);color:var(--ink);padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink)}
+.muted{color:var(--soft);font-size:13px}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule)}
+th{font-size:13px;color:var(--soft)}
+td .cat{font-size:12px;color:var(--soft)}
+.drop{border:2px dashed var(--rule);border-radius:10px;padding:18px;text-align:center;cursor:pointer;background:var(--field)}
+.drop.over{border-color:var(--accent)}
+.drop.has{border-style:solid;border-color:var(--accent)}
+.drop b{display:block;word-break:break-all}
+.drop input{display:none}
+.msg{padding:10px 14px;border-radius:8px;margin:12px 0}
+.msg.error{background:var(--err-bg);color:var(--err)}
+.status{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+.pill{font-weight:600;padding:4px 12px;border-radius:999px}
+.pill.fail{background:var(--err-bg);color:var(--err)}
+.pill.warn{background:var(--warn-bg);color:var(--warn)}
+.pill.pass{background:var(--ok-bg);color:var(--ok)}
+iframe{width:100%;height:70vh;border:1px solid var(--rule);border-radius:10px;background:#fff}
+fieldset{border:0;padding:0;margin:0}
+.checks{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px}
+.checks label{display:inline-flex;gap:6px;align-items:center;font-weight:400;color:var(--ink);margin:0}
+details summary{cursor:pointer;color:var(--soft);font-size:14px}
+footer{margin-top:40px;color:var(--soft);font-size:13px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<header class="top"><h1>uzloc</h1><span class="muted">v{{VERSION}}</span></header>
+<p class="sub">Uzbek localization toolkit. Everything runs on this computer.</p>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" id="t-translit" aria-controls="p-translit" aria-selected="true">Transliterate</button>
+  <button role="tab" id="t-glossary" aria-controls="p-glossary" aria-selected="false">Glossary</button>
+  <button role="tab" id="t-check" aria-controls="p-check" aria-selected="false">Check files</button>
+</nav>
+
+<!-- Transliterate -->
+<section id="p-translit" role="tabpanel" aria-labelledby="t-translit">
+  <div class="row">
+    <div class="seg" role="group" aria-label="Convert to">
+      <button type="button" data-to="auto" aria-pressed="true">Auto</button>
+      <button type="button" data-to="latin" aria-pressed="false">→ Lotin</button>
+      <button type="button" data-to="cyrillic" aria-pressed="false">→ Кирилл</button>
+    </div>
+    <span class="muted" id="tr-script"></span>
+  </div>
+  <div class="grid2">
+    <div><label for="tr-in">Text</label>
+      <textarea id="tr-in" placeholder="Salom, dunyo! or Салом, дунё!"></textarea></div>
+    <div><label for="tr-out">Result</label>
+      <textarea id="tr-out" readonly></textarea></div>
+  </div>
+  <div class="row"><button class="btn ghost" type="button" id="tr-copy">Copy result</button></div>
+</section>
+
+<!-- Glossary -->
+<section id="p-glossary" role="tabpanel" aria-labelledby="t-glossary" hidden>
+  <div class="row">
+    <div style="flex:2;min-width:220px"><label for="gl-q">Word in English, Uzbek or Russian</label>
+      <input type="search" id="gl-q" placeholder="password, sozlamalar, сохранить" autocomplete="off"></div>
+    <div style="flex:1;min-width:140px"><label for="gl-cat">Category</label>
+      <select id="gl-cat"><option value="">All</option></select></div>
+  </div>
+  <div class="card" id="gl-box"><p class="muted" id="gl-empty">Type a word to search 168 IT terms. Typos are fine.</p>
+    <table id="gl-table" hidden><thead><tr><th>English</th><th>O'zbekcha</th><th>Русский</th></tr></thead><tbody></tbody></table>
+  </div>
+</section>
+
+<!-- Check files -->
+<section id="p-check" role="tabpanel" aria-labelledby="t-check" hidden>
+  <div class="grid2">
+    <div class="drop" id="drop-source" tabindex="0" role="button" aria-label="Choose the source file">
+      <input type="file" accept=".json,.po,.pot,.csv">
+      <span class="muted">Source file</span><b>Drop en.json, a .po or .csv here</b>
+      <span class="muted">or click to choose</span>
+    </div>
+    <div class="drop" id="drop-target" tabindex="0" role="button" aria-label="Choose the translation file">
+      <input type="file" accept=".json,.po,.pot,.csv">
+      <span class="muted">Translation file</span><b>Drop uz.json here</b>
+      <span class="muted">not needed for a single .po file</span>
+    </div>
+  </div>
+  <div class="row">
+    <label for="ck-script" style="margin:0">Expected script</label>
+    <select id="ck-script" style="width:auto"><option value="">Any</option><option value="latin">Latin</option><option value="cyrillic">Cyrillic</option></select>
+    <button class="btn" type="button" id="ck-run" disabled>Check</button>
+    <button class="btn ghost" type="button" id="ck-example">Try the example</button>
+  </div>
+  <details><summary>Skip some checks</summary><fieldset class="checks" id="ck-ignore" style="margin-top:8px"></fieldset></details>
+  <div id="ck-msg" class="msg error" role="alert" hidden></div>
+  <div id="ck-result" hidden>
+    <div class="status"><span class="pill" id="ck-pill"></span><span id="ck-progress" class="muted"></span></div>
+    <div class="row">
+      <button class="btn ghost" type="button" data-dl="html">Download HTML</button>
+      <button class="btn ghost" type="button" data-dl="markdown">Download Markdown</button>
+      <button class="btn ghost" type="button" data-dl="json">Download JSON</button>
+    </div>
+    <iframe id="ck-frame" title="Report" sandbox="allow-scripts"></iframe>
+  </div>
+</section>
+
+<footer>Created by abb · <a href="https://github.com/turgunovabb1/uzloc" style="color:inherit">github.com/turgunovabb1/uzloc</a></footer>
+</main>
+
+<script>
+"use strict";
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+
+async function api(path, body) {
+  const opts = body === undefined ? {} :
+    { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
+  const res = await fetch(path, opts);
+  const data = await res.json().catch(() => ({ error: "The server sent an unreadable answer." }));
+  if (!res.ok) throw new Error(data.error || res.statusText);
+  return data;
+}
+const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+
+// Tabs
+$$(".tabs button").forEach(tab => tab.addEventListener("click", () => {
+  $$(".tabs button").forEach(t => t.setAttribute("aria-selected", t === tab));
+  $$("[role=tabpanel]").forEach(p => p.hidden = p.id !== tab.getAttribute("aria-controls"));
+  try { localStorage.setItem("uzloc-tab", tab.id); } catch (e) {}
+}));
+try { const saved = localStorage.getItem("uzloc-tab"); if (saved && $("#" + saved)) $("#" + saved).click(); } catch (e) {}
+
+// Transliterate
+let trTo = "auto";
+const SCRIPT_NAMES = { latin: "Input is Latin", cyrillic: "Input is Cyrillic", mixed: "Input mixes both scripts", unknown: "" };
+const runTranslit = debounce(async () => {
+  const text = $("#tr-in").value;
+  if (!text.trim()) { $("#tr-out").value = ""; $("#tr-script").textContent = ""; return; }
+  try {
+    const r = await api("/api/translit", { text, to: trTo });
+    $("#tr-out").value = r.result;
+    $("#tr-script").textContent = SCRIPT_NAMES[r.input_script] || "";
+  } catch (e) { $("#tr-script").textContent = e.message; }
+}, 200);
+$("#tr-in").addEventListener("input", runTranslit);
+$$(".seg button").forEach(b => b.addEventListener("click", () => {
+  trTo = b.dataset.to;
+  $$(".seg button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  runTranslit();
+}));
+$("#tr-copy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("#tr-out").value); $("#tr-copy").textContent = "Copied ✓"; }
+  catch (e) { $("#tr-out").select(); document.execCommand("copy"); $("#tr-copy").textContent = "Copied ✓"; }
+  setTimeout(() => $("#tr-copy").textContent = "Copy result", 1500);
+});
+
+// Glossary
+function cell(text) { const td = document.createElement("td"); td.textContent = text; return td; }
+const runGlossary = debounce(async () => {
+  const q = $("#gl-q").value.trim();
+  const params = new URLSearchParams({ q, limit: 25 });
+  if ($("#gl-cat").value) params.set("category", $("#gl-cat").value);
+  try {
+    const r = await api("/api/glossary?" + params);
+    if ($("#gl-cat").options.length === 1) {
+      for (const [name, n] of Object.entries(r.categories)) $("#gl-cat").add(new Option(`${name} (${n})`, name));
+    }
+    const body = $("#gl-table tbody"); body.replaceChildren();
+    for (const m of r.matches) {
+      const tr = document.createElement("tr");
+      const en = cell(m.en); const cat = document.createElement("div");
+      cat.className = "cat"; cat.textContent = m.category; en.append(cat);
+      tr.append(en, cell(m.uz), cell(m.ru)); body.append(tr);
+    }
+    $("#gl-table").hidden = !r.matches.length;
+    $("#gl-empty").hidden = !!r.matches.length;
+    $("#gl-empty").textContent = q ? `No terms found for "${q}".` : "Type a word to search 168 IT terms. Typos are fine.";
+  } catch (e) { $("#gl-empty").hidden = false; $("#gl-empty").textContent = e.message; }
+}, 200);
+$("#gl-q").addEventListener("input", runGlossary);
+$("#gl-cat").addEventListener("change", runGlossary);
+runGlossary();
+
+// Check files
+const files = { source: null, target: null };
+let lastReport = null;
+function setupDrop(id, key) {
+  const box = $("#" + id), input = $("input", box);
+  const take = file => {
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) return showError("Files are too large (5 MB max).");
+    file.text().then(text => {
+      files[key] = { name: file.name, text };
+      box.classList.add("has"); $("b", box).textContent = file.name;
+      $("#ck-run").disabled = !files.source;
+    });
+  };
+  box.addEventListener("click", () => input.click());
+  box.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+  input.addEventListener("change", () => take(input.files[0]));
+  box.addEventListener("dragover", e => { e.preventDefault(); box.classList.add("over"); });
+  box.addEventListener("dragleave", () => box.classList.remove("over"));
+  box.addEventListener("drop", e => { e.preventDefault(); box.classList.remove("over"); take(e.dataTransfer.files[0]); });
+}
+setupDrop("drop-source", "source");
+setupDrop("drop-target", "target");
+
+function showError(text) { $("#ck-msg").textContent = text; $("#ck-msg").hidden = !text; }
+
+api("/api/version").then(r => {
+  for (const name of r.checks) {
+    const l = document.createElement("label"); const c = document.createElement("input");
+    c.type = "checkbox"; c.value = name; l.append(c, " " + name); $("#ck-ignore").append(l);
+  }
+}).catch(() => {});
+
+async function runCheck(payload) {
+  showError(""); $("#ck-run").disabled = true;
+  try {
+    const r = await api("/api/check", payload);
+    lastReport = r;
+    const s = r.summary;
+    const pill = $("#ck-pill");
+    pill.className = "pill " + (s.errors ? "fail" : s.warnings ? "warn" : "pass");
+    pill.textContent = s.errors ? `${s.errors} error(s) to fix` : s.warnings ? `${s.warnings} warning(s) to review` : "No problems found";
+    $("#ck-progress").textContent = `${s.translated} of ${s.total} keys translated (${s.progress}%)`;
+    $("#ck-frame").srcdoc = r.html;
+    $("#ck-result").hidden = false;
+  } catch (e) { showError(e.message); $("#ck-result").hidden = true; }
+  finally { $("#ck-run").disabled = !files.source; }
+}
+$("#ck-run").addEventListener("click", () => runCheck({
+  source: files.source, target: files.target,
+  script: $("#ck-script").value || null,
+  ignore: $$("#ck-ignore input:checked").map(c => c.value),
+}));
+$("#ck-example").addEventListener("click", () => {
+  const source = { name: "en.json", text: JSON.stringify({ app: { welcome: "Welcome, {name}!", files: "Found %d files in %s.", delete: "Delete <b>{count}</b> items?", save: "Save" }, errors: { offline: "You are offline." } }) };
+  const target = { name: "uz.json", text: JSON.stringify({ app: { welcome: "Xush kelibsiz, {ism}!", files: "%s ichida %d ta fayl topildi.", delete: "{count} ta elementni o'chirasizmi?", save: "Saqlash" }, errors: { offline: "Siz oflaynsiz" } }) };
+  runCheck({ source, target, script: null, ignore: [] });
+});
+$$("[data-dl]").forEach(b => b.addEventListener("click", () => {
+  if (!lastReport) return;
+  const kind = b.dataset.dl;
+  const text = kind === "json" ? JSON.stringify(lastReport.json, null, 2) : lastReport[kind];
+  const ext = { html: "html", markdown: "md", json: "json" }[kind];
+  const type = { html: "text/html", markdown: "text/markdown", json: "application/json" }[kind];
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type: type + ";charset=utf-8" }));
+  a.download = "uzloc-report." + ext; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}));
+</script>
+</body>
+</html>
